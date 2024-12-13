@@ -33,9 +33,8 @@ public class ObligationController {
 
     @PutMapping("/edit-obligation/{id}")
     public ResponseEntity<Obligation> editObligation(@RequestBody Obligation obligation, @PathVariable Long id){
-        obligation.setStatus(Status.MORA);
         Obligation obligationModified = service.editObligation(obligation, id);
-        return new ResponseEntity<Obligation>(obligation, HttpStatus.OK);
+        return new ResponseEntity<Obligation>(obligationModified, HttpStatus.OK);
     }
 
     @DeleteMapping("/close-obligation/{id}")

@@ -33,31 +33,33 @@ public class ObligationServiceImpl implements ObligationService {
 
         if (obligation.getPlayers() != null && !obligation.getPlayers().isEmpty()) {
             for (Player player : obligation.getPlayers()) {
-                Obligation obligacionEntity = new Obligation(obligation, player);
-                obligationRepository.save(obligacionEntity);
-
+                obligationRepository.save(new Obligation(obligation, player));
             }
         } else if (obligation.getCategories() != null && !obligation.getCategories().isEmpty()) {
             for (Category category : obligation.getCategories()) {
                 List<Player> playersOnCategory = playerRepository.findByCategoryId(category.getId());
                 for (Player player : playersOnCategory) {
-                    Obligation obligacionEntity = new Obligation(obligation, player);
-                    obligationRepository.save(obligacionEntity);
+                    obligationRepository.save( new Obligation(obligation, player));
                 }
             }
         }
-
     }
 
     @Override
     public Obligation editObligation(Obligation obligation, Long id) {
+        obligation.setStatus(Status.MORA);
         obligation.setId(id);
         return obligationRepository.save(obligation);
     }
 
     @Override
     public List<Obligation> getAllObligation() {
-        return obligationRepository.findAll();
+        List<Obligation> obligationsResult = obligationRepository.findAll();
+        if(obligationsResult != null && !obligationsResult.isEmpty()) {
+            obligationsResult = obligationsResult.stream().filter(obligation -> obligation.getStatus() != null
+                    && obligation.getStatus()== Status.MORA).collect(Collectors.toList());
+        }
+        return obligationsResult;
     }
 
     @Override

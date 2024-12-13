@@ -47,9 +47,9 @@ public class Obligation {
         this.name = obligation.getName();
         this.description = obligation.getDescription();
         this.value = obligation.getValue();
-        this.dateCreation = obligation.getDateCreation();
+        this.dateCreation = new Date();
         this.maxDate = obligation.getMaxDate();
-        this.status = obligation.getStatus();
+        this.status = Status.MORA;
         this.player = player;
     }
 
