@@ -1,24 +1,18 @@
 package com.garnicsoft.obligations.controller;
 
 
+import com.garnicsoft.obligations.models.dtos.ObligationDTO;
 import com.garnicsoft.obligations.models.entitys.Obligation;
 import com.garnicsoft.obligations.models.enums.Status;
 import com.garnicsoft.obligations.services.ObligationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.Path;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/obligations")
 public class ObligationController {
@@ -27,9 +21,8 @@ public class ObligationController {
     private ObligationServiceImpl service;
 
     @PostMapping("/create-obligation")
-    public ResponseEntity<Obligation> createObligation(@RequestBody Obligation obligation){
-        Obligation obligationCreated = service.createObligation(obligation);
-        return new ResponseEntity<Obligation>(obligationCreated, HttpStatus.CREATED);
+    public void createObligation(@RequestBody ObligationDTO obligation) {
+       service.createObligation(obligation);
     }
 
     @GetMapping("/get-all-obligations")

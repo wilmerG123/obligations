@@ -1,29 +1,52 @@
 package com.garnicsoft.obligations.services;
 
+import com.garnicsoft.obligations.models.dtos.ObligationDTO;
+import com.garnicsoft.obligations.models.entitys.Category;
 import com.garnicsoft.obligations.models.entitys.Obligation;
+import com.garnicsoft.obligations.models.entitys.Player;
 import com.garnicsoft.obligations.models.enums.Status;
 import com.garnicsoft.obligations.repository.ObligationRepository;
+import com.garnicsoft.obligations.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
 public class ObligationServiceImpl implements ObligationService {
 
     private ObligationRepository obligationRepository;
+    private PlayerRepository playerRepository;
 
-    public ObligationServiceImpl(ObligationRepository obligationRepository) {
+    public ObligationServiceImpl(ObligationRepository obligationRepository,
+                                 PlayerRepository playerRepository) {
         this.obligationRepository = obligationRepository;
+        this.playerRepository = playerRepository;
     }
 
     @Override
-    public Obligation createObligation(Obligation obligation) {
-        obligation.setStatus(Status.MORA);
-        obligation.setDateCreation(new Date());
-        return obligationRepository.save(obligation);
+    public void createObligation(ObligationDTO obligation) {
+
+        if (obligation.getPlayers() != null && !obligation.getPlayers().isEmpty()) {
+            for (Player player : obligation.getPlayers()) {
+                Obligation obligacionEntity = new Obligation(obligation, player);
+                obligationRepository.save(obligacionEntity);
+
+            }
+        } else if (obligation.getCategories() != null && !obligation.getCategories().isEmpty()) {
+            for (Category category : obligation.getCategories()) {
+                List<Player> playersOnCategory = playerRepository.findByCategoryId(category.getId());
+                for (Player player : playersOnCategory) {
+                    Obligation obligacionEntity = new Obligation(obligation, player);
+                    obligationRepository.save(obligacionEntity);
+                }
+            }
+        }
+
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.garnicsoft.obligations.models.entitys;
 
 
+import com.garnicsoft.obligations.models.dtos.ObligationDTO;
 import com.garnicsoft.obligations.models.enums.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,6 +40,16 @@ public class Obligation {
         this.dateCreation = dateCreation;
         this.maxDate = maxDate;
         this.status = status;
+        this.player = player;
+    }
+
+    public Obligation(ObligationDTO obligation, Player player) {
+        this.name = obligation.getName();
+        this.description = obligation.getDescription();
+        this.value = obligation.getValue();
+        this.dateCreation = obligation.getDateCreation();
+        this.maxDate = obligation.getMaxDate();
+        this.status = obligation.getStatus();
         this.player = player;
     }
 
