@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface ObligationRepository extends JpaRepository<Obligation, Long> {
     List<Obligation> findByPlayerIdAndStatus(Long jugadorId, Status status);
-
+    List<Obligation> findByPlayerName(String name);
+    List<Obligation> findByPlayerCategoryId(Long id);
 }

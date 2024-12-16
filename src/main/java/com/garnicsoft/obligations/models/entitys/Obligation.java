@@ -1,15 +1,12 @@
 package com.garnicsoft.obligations.models.entitys;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.garnicsoft.obligations.models.dtos.ObligationDTO;
 import com.garnicsoft.obligations.models.enums.Status;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "obligation")
@@ -26,6 +23,9 @@ public class Obligation {
     private Status status;
     @ManyToOne
     private Player player;
+    @OneToMany(mappedBy = "obligation") // Relación Uno a Muchos con Pago (una obligación puede tener muchos pagos)
+    @JsonManagedReference
+    private List<Pago> pagos; // Una obligación puede tener varios pagos, para el manejo de pagos parciales
 
     public Obligation() {
     }
@@ -39,6 +39,16 @@ public class Obligation {
         this.dateCreation = dateCreation;
         this.maxDate = maxDate;
         this.status = status;
+        this.player = player;
+    }
+
+    public Obligation(ObligationDTO obligation, Player player) {
+        this.name = obligation.getName();
+        this.description = obligation.getDescription();
+        this.value = obligation.getValue();
+        this.dateCreation = new Date();
+        this.maxDate = obligation.getMaxDate();
+        this.status = Status.MORA;
         this.player = player;
     }
 
@@ -104,5 +114,13 @@ public class Obligation {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public List<Pago> getPagos() {
+        return pagos;
+    }
+
+    public void setPagos(List<Pago> pagos) {
+        this.pagos = pagos;
     }
 }
