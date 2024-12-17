@@ -1,5 +1,6 @@
 package com.garnicsoft.obligations;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +11,21 @@ import javax.sql.DataSource;
 public class DataSourceConfig {
 
     @Bean
-    public DataSource getDataSource() {
-        return DataSourceBuilder.create().driverClassName("com.mysql.cj.jdbc.Driver")
-                .url("jdbc:mysql://localhost:3306/projectNeww?useSSL=false&serverTimezone=UTC").username("root")
-                .password("00000000").build();
-    }
+    public DataSource dataSource(
+            @Value("${MYSQLHOST}") String mysqlHost,
+            @Value("${MYSQLPORT}") String mysqlPort,
+            @Value("${MYSQL_DATABASE}") String mysqlDatabase,
+            @Value("${MYSQLUSER}") String mysqlUser,
+            @Value("${MYSQLPASSWORD}") String mysqlPassword) {
 
+        String url = String.format("jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC",
+                mysqlHost, mysqlPort, mysqlDatabase);
+
+        return DataSourceBuilder.create()
+                .driverClassName("com.mysql.cj.jdbc.Driver")
+                .url(url)
+                .username(mysqlUser)
+                .password(mysqlPassword)
+                .build();
+    }
 }
